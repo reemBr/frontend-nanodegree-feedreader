@@ -84,12 +84,10 @@ $(function() {
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
         beforeEach(function(done) {
-            loadFeed(0, function() {
-                done();
-            });
+            loadFeed(0,done);
         });
         it('loaded feed', function() {
-            expect($('.entry').length > 0).toBe(true);
+            expect($('.feed .entry').length > 0).toBe(true);
         });
 
     });
@@ -97,24 +95,24 @@ $(function() {
 
     /* A new test suite named 'New Feed Selection' */
     describe('New Feed Selection', function() {
+     var feedAfterFirstLoad, feedAfterSecondLoad;
         beforeEach(function(done) {
-            loadFeed(0, function() {
-                done();
-            });
+            loadFeed(0, function () {
+                // great place to get content of feed container
+                feedAfterFirstLoad = $('.feed').html();
+                loadFeed(1, function () {
+                    // get content of feed container again
+                    feedAfterSecondLoad = $('.feed').html();
+                    done();
+                });
+             });
         });
         /* A Test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          */
         it('check if loadFeed changes entries', function() {
-            var initialFeed, secondFeed;
-            // first feed that appears on screen
-            initialFeed = $('.feed').html();
-            // load another feed from the list
-            loadFeed(1, function() {
-                secondFeed = $('.feed').html();
-            });
             // Checks that they are not equivalent 
-            expect(initialFeed).not.toEqual(secondFeed);
+            expect(feedAfterFirstLoad).not.toEqual(feedAfterSecondLoad);
         });
     });
 
